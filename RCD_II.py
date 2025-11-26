@@ -29,7 +29,7 @@ def draw_slab_elevation(spans, t, As_results):
         if i < len(spans) - 1:
             support_x = x + L
             ax.plot([support_x, support_x], [y_bottom - 3, y_bottom], 'black', linewidth=3)
-            ax.text(support_x, y_bottom - 3.5, "Support", ha='center', va='top', fontsize=7)
+            ax.text(support_x, y_bottom - 3.5, "", ha='center', va='top', fontsize=7)
 
         # ---- Reinforcement Extraction ----
         span_res = As_results[i]
@@ -303,6 +303,7 @@ if st.sidebar.button("𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚎 𝙳𝚎𝚜𝚒𝚐�
 
 else:
     st.info("𝔼𝕟𝕥𝕖𝕣 𝕪𝕠𝕦𝕣 𝕕𝕖𝕤𝕚𝕘𝕟 𝕡𝕒𝕣𝕒𝕞𝕖𝕥𝕖𝕣𝕤 𝕚𝕟 𝕥𝕙𝕖 𝕤𝕚𝕕𝕖𝕓𝕒𝕣 𝕒𝕟𝕕 𝕔𝕝𝕚𝕔𝕜 'ℂ𝕒𝕝𝕔𝕦𝕝𝕒𝕥𝕖 𝔻𝕖𝕤𝕚𝕘𝕟.")
+
 
 
 
