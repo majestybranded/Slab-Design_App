@@ -1,6 +1,71 @@
 import math
 import streamlit as st
+import matplotlib.pyplot as plt
 
+
+# ============================================================
+#                  SUPPLEMENTARY FUNCTIONS
+# ============================================================
+
+def draw_slab_elevation(spans, t, As_results):
+    """Draws elevation of slab with supports, thickness, and reinforcement info."""
+    fig, ax = plt.subplots(figsize=(14, 3))
+
+    x = 0
+    y_bottom = 0
+    y_top = t
+
+    total_length = sum(spans)
+
+    for i, L in enumerate(spans):
+
+        # ---- Slab thickness (rectangle) ----
+        ax.plot([x, x + L], [y_bottom, y_bottom], 'black')
+        ax.plot([x, x + L], [y_top, y_top], 'black')
+        ax.plot([x, x], [y_bottom, y_top], 'black')
+        ax.plot([x + L, x + L], [y_bottom, y_top], 'black')
+
+        # ---- Supports Between Spans (Except Ends) ----
+        if i < len(spans) - 1:
+            support_x = x + L
+            ax.plot([support_x, support_x], [y_bottom - 3, y_bottom], 'black', linewidth=3)
+            ax.text(support_x, y_bottom - 3.5, "Support", ha='center', va='top', fontsize=7)
+
+        # ---- Reinforcement Extraction ----
+        span_res = As_results[i]
+        first_key = list(span_res.keys())[0]
+
+        main_info = span_res[first_key]["Spacing (Main)"]
+        shrink_info = span_res[first_key]["Shrinkage Bar"]
+
+        # ---- Text for Main Reinforcement ----
+        ax.text(x + L / 2, y_bottom - 1.2,
+                f"Main: {main_info}",
+                ha='center', fontsize=8)
+
+        # ---- Text for Shrinkage Reinforcement ----
+        ax.text(x + L / 2, y_top + 1.0,
+                f"Shrinkage: {shrink_info}",
+                ha='center', fontsize=8)
+
+        # ---- Continuous Top and Bottom Bars ----
+        ax.plot([x, x + L], [y_top + 0.4, y_top + 0.4], 'red', linewidth=2)
+        ax.plot([x, x + L], [y_bottom - 0.4, y_bottom - 0.4], 'red', linewidth=2)
+
+        x += L
+
+    # ---- Continuous Top and Bottom Bar Labels ----
+    ax.text(total_length / 2, y_top + 1.8, "Slab Elevation", fontsize=8, ha="center")
+    ax.text(total_length / 2, y_bottom - 1.8, "", fontsize=8, ha="center")
+
+    # ---- Graph Style ----
+    ax.set_ylim(-5, t + 3)
+    ax.set_xlim(0, total_length)
+    ax.set_aspect('equal', adjustable='box')
+    ax.axis('off')
+
+    return fig
+    #Now Calculation
 def check_span_limits(spans):
     for i in range(1, len(spans)):
         diff = abs(spans[i] - spans[i - 1])
@@ -193,15 +258,15 @@ for i in range(num_spans):
 # Calculate Button
 if st.sidebar.button("Calculate Design", type="primary"):
 
-    st.header("Design Calculation Results")
+   st.header("𝙳𝚎𝚜𝚒𝚐𝚗 𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚒𝚘𝚗 𝚁𝚎𝚜𝚞𝚕𝚝𝚜")
 
     # --- 1. Validation Checks ---
     if check_span_limits(spans) and check_load_ratio(dead_load, live_load):
 
-        st.info("✅ All input checks passed.")
+        st.info("✅ 𝙰𝚕𝚕 𝚒𝚗𝚙𝚞𝚝 𝚌𝚑𝚎𝚌𝚔𝚜 𝚙𝚊𝚜𝚜𝚎𝚍.")
 
         # --- 2. Slab Thickness & Loads ---
-        st.subheader("1. Slab Thickness & Loads")
+        st.subheader("1. 𝚂𝚕𝚊𝚋 𝚃𝚑𝚒𝚌𝚔𝚗𝚎𝚜𝚜 & 𝙻𝚘𝚊𝚍𝚜")
         t = slab_thickness(spans)
         self_wt = self_weight_slab(t)
         total_dead, wu = ultimate_load(dead_load, self_wt, live_load)
@@ -228,10 +293,15 @@ if st.sidebar.button("Calculate Design", type="primary"):
             st.write(f"**Span {i + 1} Reinforcement:**")
             st.dataframe(res_dict)
             st.write("---")  # Separator
+ # =========================================
+        #      NEW ELEVATION DIAGRAM SECTION
+        # =========================================
+        st.subheader("4. 𝚂𝚕𝚊𝚋 𝙴𝚕𝚎𝚟𝚊𝚝𝚒𝚘𝚗")
+        fig = draw_slab_elevation(spans, t, As_results)
+        st.pyplot(fig)
+
+        st.info("Elevation shows slab thickness, supports, main reinforcement, shrinkage reinforcement, and continuous bars.")
 
 else:
-
-    st.info("𝙴𝚗𝚝𝚎𝚛 𝚢𝚘𝚞𝚛 𝚍𝚎𝚜𝚒𝚐𝚗 𝚙𝚊𝚛𝚊𝚖𝚎𝚝𝚎𝚛𝚜 𝚒𝚗 𝚝𝚑𝚎 𝚜𝚒𝚍𝚎𝚋𝚊𝚛 𝚊𝚗𝚍 𝚌𝚕𝚒𝚌𝚔 '𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚎 𝙳𝚎𝚜𝚒𝚐𝚗'.")
-
-
+    st.info("𝔼𝕟𝕥𝕖𝕣 𝕪𝕠𝕦𝕣 𝕕𝕖𝕤𝕚𝕘𝕟 𝕡𝕒𝕣𝕒𝕞𝕖𝕥𝕖𝕣𝕤 𝕚𝕟 𝕥𝕙𝕖 𝕤𝕚𝕕𝕖𝕓𝕒𝕣 𝕒𝕟𝕕 𝕔𝕝𝕚𝕔𝕜 'ℂ𝕒𝕝𝕔𝕦𝕝𝕒𝕥𝕖 𝔻𝕖𝕤𝕚𝕘𝕟.")
 
