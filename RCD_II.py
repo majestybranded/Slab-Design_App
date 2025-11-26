@@ -65,7 +65,6 @@ def draw_slab_elevation(spans, t, As_results):
     ax.axis('off')
 
     return fig
-    #Now Calculation
 def check_span_limits(spans):
     for i in range(1, len(spans)):
         diff = abs(spans[i] - spans[i - 1])
@@ -233,14 +232,14 @@ def reinforcement_design(M_list, t_in, fc, fy, bar_size):
 
 
 
-st.title(" 𝙾𝚗𝚎-𝙴𝚗𝚍 𝙲𝚘𝚗𝚝𝚒𝚗𝚞𝚘𝚞𝚜 𝚂𝚕𝚊𝚋 𝙳𝚎𝚜𝚒𝚐𝚗 𝚃𝚘𝚘𝚕:")
+st.title(" 𝙾𝚗𝚎-𝙴𝚗𝚍 𝙲𝚘𝚗𝚝𝚒𝚗𝚞𝚘𝚞𝚜 𝚂𝚕𝚊𝚋 𝙳𝚎𝚜𝚒𝚐𝚗:")
 st.write("𝚃𝚑𝚒𝚜  𝚃𝚘𝚘𝚕 𝚙𝚎𝚛𝚏𝚘𝚛𝚖𝚜 𝚙𝚛𝚎𝚕𝚒𝚖𝚒𝚗𝚊𝚛𝚢 𝚍𝚎𝚜𝚒𝚐𝚗 𝚘𝚏  𝚜𝚕𝚊𝚋 𝚋𝚊𝚜𝚎𝚍 𝚘𝚗 𝙰𝙲𝙸-318.")
 st.write("𝙶𝚛𝚘𝚞𝚙 𝙼𝚎𝚖𝚋𝚎𝚛𝚜:")
 st.write("𝖮𝗄𝖺𝗌𝗁𝖺 𝖪𝖺𝗆𝗋𝖺𝗇(𝖢𝖤-181), 𝖠𝖻𝖽𝗎𝗅 𝖲𝖺𝗆𝖺𝖽(𝖢𝖤-194), 𝖬𝖺𝗇𝗂𝖺 𝖲𝗂𝖽𝖽𝗂𝗊𝗎𝗂(𝖢𝖤-204), 𝖠𝖺𝗂𝗌𝗁𝖺 𝖹𝗎𝗅𝖿𝗂𝗊𝖺𝗋(𝖢𝖤-309)")
 # Sidebar UI (Inputs ke liye)
-st.sidebar.header("Design Inputs")
+st.sidebar.header("𝙳𝚎𝚜𝚒𝚐𝚗 𝙸𝚗𝚙𝚞𝚝𝚜")
 
-st.sidebar.subheader("Loads & Materials")
+st.sidebar.subheader("𝙻𝚘𝚊𝚍𝚜 & 𝙼𝚊𝚝𝚎𝚛𝚒𝚊𝚕𝚜")
 dead_load = st.sidebar.number_input("Dead Load (psf) (excluding slab self-weight)", min_value=0.0, value=20.0, step=5.0)
 live_load = st.sidebar.number_input("Live Load (psf)", min_value=0.0, value=40.0, step=10.0)
 fc = st.sidebar.number_input("Concrete Strength f'c (ksi)", min_value=3.0, value=4.0, step=0.5)
@@ -256,9 +255,9 @@ for i in range(num_spans):
     spans.append(L)
 
 # Calculate Button
-if st.sidebar.button("Calculate Design", type="primary"):
+if st.sidebar.button("𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚎 𝙳𝚎𝚜𝚒𝚐𝚗", type="primary"):
 
-   st.header("𝙳𝚎𝚜𝚒𝚐𝚗 𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚒𝚘𝚗 𝚁𝚎𝚜𝚞𝚕𝚝𝚜")
+    st.header("𝙳𝚎𝚜𝚒𝚐𝚗 𝙲𝚊𝚕𝚌𝚞𝚕𝚊𝚝𝚒𝚘𝚗 𝚁𝚎𝚜𝚞𝚕𝚝𝚜")
 
     # --- 1. Validation Checks ---
     if check_span_limits(spans) and check_load_ratio(dead_load, live_load):
@@ -277,7 +276,7 @@ if st.sidebar.button("Calculate Design", type="primary"):
         st.write(f"**Ultimate Factored Load (Wu): {wu:.3f} ksf**")
 
         # --- 3. Design Moments ---
-        st.subheader("2. Design Moments (kip-ft / ft)")
+        st.subheader("2. 𝚂𝚙𝚊𝚗 𝙻𝚎𝚗𝚐𝚝𝚑𝚜")
         M = design_moments(spans, wu)
 
         # Display moments in a cleaner way
@@ -286,7 +285,7 @@ if st.sidebar.button("Calculate Design", type="primary"):
 
 
         # --- 4. Reinforcement Design ---
-        st.subheader("3. Reinforcement Design")
+        st.subheader("3. 𝚁𝚎𝚒𝚗𝚏𝚘𝚛𝚌𝚎𝚖𝚎𝚗𝚝 𝙳𝚎𝚜𝚒𝚐𝚗")
         As_results = reinforcement_design(M, t, fc, fy, bar_size)
 
         for i, res_dict in enumerate(As_results):
@@ -300,8 +299,7 @@ if st.sidebar.button("Calculate Design", type="primary"):
         fig = draw_slab_elevation(spans, t, As_results)
         st.pyplot(fig)
 
-        st.info("Elevation shows slab thickness, supports, main reinforcement, shrinkage reinforcement, and continuous bars.")
+        st.info("..................................................𝙳𝚎𝚙𝚊𝚛𝚝𝚖𝚎𝚗𝚝 𝚘𝚏 𝙲𝚒𝚟𝚒𝚕 𝙴𝚗𝚐𝚒𝚗𝚎𝚎𝚛𝚒𝚗𝚐...............................................")
 
 else:
     st.info("𝔼𝕟𝕥𝕖𝕣 𝕪𝕠𝕦𝕣 𝕕𝕖𝕤𝕚𝕘𝕟 𝕡𝕒𝕣𝕒𝕞𝕖𝕥𝕖𝕣𝕤 𝕚𝕟 𝕥𝕙𝕖 𝕤𝕚𝕕𝕖𝕓𝕒𝕣 𝕒𝕟𝕕 𝕔𝕝𝕚𝕔𝕜 'ℂ𝕒𝕝𝕔𝕦𝕝𝕒𝕥𝕖 𝔻𝕖𝕤𝕚𝕘𝕟.")
-
